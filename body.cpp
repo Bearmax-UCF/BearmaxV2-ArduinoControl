@@ -5,39 +5,75 @@ Servo chassisServo;
 Servo lasServo;
 Servo larServo;
 Servo laeServo;
+Servo lagServo;
+Servo latServo;
+Servo lapServo;
+
 Servo rasServo;
 Servo rarServo;
 Servo raeServo;
+Servo ragServo;
+Servo ratServo;
+Servo rapServo;
 
 void setupBody() {
-    chassisServo.attach(CHASSIS_PIN);
-    /*
-    lasServo.attach(RIGHT_ARM_SHOULDER_PIN);
-    larServo.attach(RIGHT_ARM_ROTATOR_PIN);
-    laeServo.attach(RIGHT_ARM_ELBOW_PIN);
-    rasServo.attach(LEFT_ARM_SHOULDER_PIN);
-    rarServo.attach(LEFT_ARM_ROTATOR_PIN);
-    raeServo.attach(LEFT_ARM_ELBOW_PIN);
-    */
+    //chassisServo.attach(CHASSIS_PIN);
+    
+    lasServo.attach(LEFT_ARM_SHOULDER_PIN);
+    larServo.attach(LEFT_ARM_ROTATOR_PIN);
+    laeServo.attach(LEFT_ARM_ELBOW_PIN);
+    
+    lagServo.attach(LEFT_HAND_GRIP_PIN);
+    latServo.attach(LEFT_HAND_FINGER_PIN);
+    lapServo.attach(LEFT_HAND_PAW_PIN);
+    
 
-    chassisServo.write(90);
-    /*
-    lasServo.write(90);
+
+    rasServo.attach(RIGHT_ARM_SHOULDER_PIN);
+    rarServo.attach(RIGHT_ARM_ROTATOR_PIN);
+    raeServo.attach(RIGHT_ARM_ELBOW_PIN);
+
+    
+    ragServo.attach(RIGHT_HAND_GRIP_PIN);
+    ratServo.attach(RIGHT_HAND_FINGER_PIN);
+    rapServo.attach(RIGHT_HAND_PAW_PIN);
+    
+    
+
+    //chassisServo.write(90);
+    
+    /*lasServo.write(90);
     larServo.write(90);
     laeServo.write(90);
     rasServo.write(90);
     rarServo.write(90);
-    raeServo.write(90);
-    */
+    raeServo.write(90);*/
+    
 }
 
-void runBody(int chassis, int las, int lar, int lae, int ras, int rar, int rae) {
-    chassisServo.write(chassis + 90);
-    /*
-    lasServo.write(las + 90);
-    larServo.write(lar + 90);
-    laeServo.write(lae + 90);
-    rasServo.write(ras + 90);
-    rarServo.write(rar + 90);
-    raeServo.write(rae + 90);*/
+void runBody(int chassis, int las, int lar, int lae, int lag, int lat, int lap, int ras, int rar, int rae, int rag, int rat, int rap) {
+    //chassisServo.write(chassis + 90);
+    
+    // Left Arm
+    lasServo.write(las);
+    larServo.write(lar);
+    laeServo.write(lae);
+    // Left Hand
+    
+    lagServo.write(lag);
+    latServo.write(lat);
+    lapServo.write(lap);
+    
+
+    // Right Arm
+    rasServo.write(ras);
+    rarServo.write(rar);
+    raeServo.write(rae);
+
+    // Right Hand
+    
+    ragServo.write(rag);
+    ratServo.write(rat);
+    rapServo.write(rap);
+    
 }

@@ -16,20 +16,22 @@
 // Used for array indexes! Don't change numbers!
 enum Joint {
   CHASSIS = 0,
-  HEAD_ROLL,
-  HEAD_PITCH,
+  L_ARM_SHOULDER,
+  L_ARM_ROTATOR,
+  L_ARM_ELBOW,
+  L_ARM_GRIP,
+  L_ARM_THUMB,
+  L_ARM_PAW,
+  R_ARM_SHOULDER,
+  R_ARM_ROTATOR,
+  R_ARM_ELBOW,
+  R_ARM_GRIP,
+  R_ARM_THUMB,
+  R_ARM_PAW,
+  L_HEAD,
+  R_HEAD,
   HEAD_YAW,
-  LEFT_EAR_YAW,
-  LEFT_EAR_PITCH,
-  RIGHT_EAR_YAW,
-  RIGHT_EAR_PITCH,
-  LEFT_ARM_SHOULDER,
-  LEFT_ARM_ROTATOR,
-  LEFT_ARM_ELBOW,
-  RIGHT_ARM_SHOULDER,
-  RIGHT_ARM_ROTATOR,
-  RIGHT_ARM_ELBOW,
-  NUMBER_OF_JOINTS /* joint state array length, not a valid index! */
+  NUMBER_OF_JOINTS /* not a valid index! */
 };
 
 /*
@@ -47,16 +49,45 @@ void setup() {
   while (!SerialConn) {
     ; // Wait for serial port to connect.
   }
-  
+
+  SerialConn.println("Start H Setup");
   // Run setup for Head
   setupHead();
+  SerialConn.println("End H Setup");
 
+  SerialConn.println("Start Body Setup");
   // TODO: Run setup for arms & body
   setupBody();
-
+  SerialConn.println("End Body Setup");
+  
   // Send ready packet to master
-  //SerialConn.println("ready");
-  runBody(0, 0, 0, 0, 0, 0, 0);
+  SerialConn.println("ready");
+  
+  // 0-Chassis, 1-L_Shoulder, 2-L_Rotator, 3-L_Elbow, 4-L_Grip, 5-L_Thumb, 6-L_Paw, 7-R_Shoulder, 8-R_Rotator, 9-R_Elbow, 10-R_Grip, 11-R_Thumb, 12-R_Paw
+  // Netural Pos Below
+  //      0-0,  1-180,  2-90, 3-0,  4-90, 5-0,  6-90, 7-0,  8-90, 9-180,  10-0, 11-90, 12-0
+  runBody(  0,    180,    90,   0,    90,   0,    90,   0,    90,   180,     0,    90,    0);
+
+  // Which way each joint moves:
+  /**
+   * 0- 0-180, Increase
+   * LEFT ARM BELOW
+   * 1- 0-180, Increase angle = lower position,       180 neutral pos
+   * 2- 0-180, Increase angle = thumb points inward,   90 neutral pos
+   * 3- 0-180, Increase angle = higher elbow position,  0 neutral pos
+   * 4- 0-180, Increase angle = grip closes,           90 neutral pos
+   * 5- 0-180, Increase angle = thumb outward,          0 neutral pos
+   * 6- 0-180, Increase angle = paw closes,            90 neutral pos
+   * RIGHT ARM BELOW
+   * 7- 0-180, Increase angle = higher position,        0 neutral pos
+   * 8- 0-180, Increase angle = thumb points outward,  90 neutral pos
+   * 9- 0-180, Increase angle = elbow points down,    180 neutral pos
+   * 10-0-180, Increase angle = grip opens more,        0 neutral pos 
+   * 11-0-180, Increase angle = thumb points in more,  90 neutral pos
+   * 12-0-180, Increase angle = palm opens up,          0 neutral pos
+   * 
+   */
+  
 }
 
 /**
@@ -102,7 +133,9 @@ void save_prev_target_state() {
 
 // Handles commands sent from serial port.
 void cmd_handler() {
+  //SerialConn.println("Dont be Here");
   if (SerialConn.available() > 0) {
+    SerialConn.println("Here");
     String cmd = SerialConn.readStringUntil('\r');
     cmd.trim();
     if (cmd.startsWith("s ")) {
@@ -125,6 +158,7 @@ void cmd_handler() {
       //SerialConn.println(cmd);
     }
   }
+  //SerialConn.println("ESP Dont be Here");
 }
 
 void handle_new_target() {
@@ -134,14 +168,9 @@ void handle_new_target() {
     //SerialConn.println("hi");
     // iterations are 0 bkz we're assuming that ROS is sending real-time positions that will do its own smoothing.
     runHead(
-      0, /* Not using head z */
-      (double) target_state[Joint::HEAD_ROLL],
-      (double) target_state[Joint::HEAD_PITCH],
+      (double) target_state[Joint::L_HEAD],
+      (double) target_state[Joint::R_HEAD],
       (double) target_state[Joint::HEAD_YAW],
-      target_state[Joint::LEFT_EAR_YAW] + 90,
-      target_state[Joint::LEFT_EAR_PITCH] + 90,
-      target_state[Joint::RIGHT_EAR_YAW] + 90,
-      target_state[Joint::RIGHT_EAR_PITCH] + 90,
       1 /* 1 iterations */
     );
   }
@@ -149,25 +178,27 @@ void handle_new_target() {
   if (body_has_update()) {
     runBody(
       target_state[Joint::CHASSIS],
-      target_state[Joint::LEFT_ARM_SHOULDER],
-      target_state[Joint::LEFT_ARM_ROTATOR],
-      target_state[Joint::LEFT_ARM_ELBOW],
-      target_state[Joint::RIGHT_ARM_SHOULDER],
-      target_state[Joint::RIGHT_ARM_ROTATOR],
-      target_state[Joint::RIGHT_ARM_ELBOW]
+      target_state[Joint::L_ARM_SHOULDER],
+      target_state[Joint::L_ARM_ROTATOR],
+      target_state[Joint::L_ARM_ELBOW],
+      target_state[Joint::L_ARM_GRIP],
+      target_state[Joint::L_ARM_THUMB],
+      target_state[Joint::L_ARM_PAW],
+      target_state[Joint::R_ARM_SHOULDER],
+      target_state[Joint::R_ARM_ROTATOR],
+      target_state[Joint::R_ARM_ELBOW],
+      target_state[Joint::R_ARM_GRIP],
+      target_state[Joint::R_ARM_THUMB],
+      target_state[Joint::R_ARM_PAW]
      );
   }
 }
 
-#define NUM_OF_HEAD_JOINTS 7
+#define NUM_OF_HEAD_JOINTS 3
 int head_joint_idxs[NUM_OF_HEAD_JOINTS] = {
-  Joint::HEAD_ROLL,
-  Joint::HEAD_PITCH,
-  Joint::HEAD_YAW,
-  Joint::LEFT_EAR_YAW,
-  Joint::LEFT_EAR_PITCH,
-  Joint::RIGHT_EAR_YAW,
-  Joint::RIGHT_EAR_PITCH
+  Joint::L_HEAD,
+  Joint::R_HEAD,
+  Joint::HEAD_YAW
 };
 
 bool head_has_update() {
@@ -180,15 +211,21 @@ bool head_has_update() {
   return false;
 }
 
-#define NUM_OF_BODY_JOINTS 7
+#define NUM_OF_BODY_JOINTS 13
 int body_joint_idxs[NUM_OF_BODY_JOINTS] = {
   Joint::CHASSIS,
-  Joint::LEFT_ARM_SHOULDER,
-  Joint::LEFT_ARM_ROTATOR,
-  Joint::LEFT_ARM_ELBOW,
-  Joint::RIGHT_ARM_SHOULDER,
-  Joint::RIGHT_ARM_ROTATOR,
-  Joint::RIGHT_ARM_ELBOW
+  Joint::L_ARM_SHOULDER,
+  Joint::L_ARM_ROTATOR,
+  Joint::L_ARM_ELBOW,
+  Joint::L_ARM_GRIP,
+  Joint::L_ARM_THUMB,
+  Joint::L_ARM_PAW,
+  Joint::R_ARM_SHOULDER,
+  Joint::R_ARM_ROTATOR,
+  Joint::R_ARM_ELBOW,
+  Joint::R_ARM_GRIP,
+  Joint::R_ARM_THUMB,
+  Joint::R_ARM_PAW
 };
 
 bool body_has_update() {

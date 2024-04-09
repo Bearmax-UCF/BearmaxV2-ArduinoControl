@@ -5,85 +5,79 @@
 
 //Create objects
 //no num is front, 2 is left, 3 is right
-Servo frontPlatformServo; //front
+
+//Servo frontPlatformServo; //front
+
 Servo leftPlatformServo; //left
 Servo rightPlatformServo; //right
 Servo yawPlatformServo; //yaw servo
-Servo leftEarYawServo; //left ear yaw
+
+/*Servo leftEarYawServo; //left ear yaw
 Servo leftEarPitchServo; //left ear pitch
 Servo rightEarYawServo; //right ear yaw
 Servo rightEarPitchServo; //right ear pitch
+*/
 
 int angles[3]; //0-front, 1-left, 2-right
-int servoAdjust[8]; //0-front, 1-left, 2-right, 3-patform yaw, 4-left ear yaw, 5-left ear pitch, 6-right ear yaw, 7-right ear pitch
-int prevAngles[8];
+int servoAdjust[3]; //0-Left, 1-Right, 2-Yaw
+int prevAngles[3];
 double currentYaw = 0;
-double prevPlatformPos[4]; //0-z, 1-roll, 2-pitch, 4-yaw
+double prevPlatformPos[3]; // 0-roll, 1-pitch, 2-yaw
 double servoDelay;
 int iterations;
 double unitCubicCoeff[2];
 
 void setupHead(){
-  //frontPlatformServo.attach(2); //front
+ 
   leftPlatformServo.attach(5); //left
   rightPlatformServo.attach(7); //right
-  yawPlatformServo.attach(6); //
-  //leftEarYawServo.attach(6); //
-  //leftEarPitchServo.attach(7); //
-  //rightEarYawServo.attach(8); //
-  //rightEarPitchServo.attach(9); //
+  yawPlatformServo.attach(6); // yaw
+ 
 
-  //servoAdjust[0] = -5; //0-front, 1-left, 2-right, 3-patform yaw, 4-left ear yaw, 5-left ear pitch, 6-right ear yaw, 7-right ear pitch
-  servoAdjust[1] = -9; //0-front, 1-left, 2-right, 3-patform yaw, 4-left ear yaw, 5-left ear pitch, 6-right ear yaw, 7-right ear pitch
-  servoAdjust[2] = 7; //0-front, 1-left, 2-right, 3-patform yaw, 4-left ear yaw, 5-left ear pitch, 6-right ear yaw, 7-right ear pitch
-  servoAdjust[3] = -4; //0-front, 1-left, 2-right, 3-patform yaw, 4-left ear yaw, 5-left ear pitch, 6-right ear yaw, 7-right ear pitch
-  //servoAdjust[4] = 3; //0-front, 1-left, 2-right, 3-patform yaw, 4-left ear yaw, 5-left ear pitch, 6-right ear yaw, 7-right ear pitch
-  //servoAdjust[5] = -3; //0-front, 1-left, 2-right, 3-patform yaw, 4-left ear yaw, 5-left ear pitch, 6-right ear yaw, 7-right ear pitch
-  //servoAdjust[6] = 0; //0-front, 1-left, 2-right, 3-patform yaw, 4-left ear yaw, 5-left ear pitch, 6-right ear yaw, 7-right ear pitch
-  //servoAdjust[7] = -5; //0-front, 1-left, 2-right, 3-patform yaw, 4-left ear yaw, 5-left ear pitch, 6-right ear yaw, 7-right ear pitch
-
-  //frontPlatformServo.write(90 + servoAdjust[0]); //front
-  leftPlatformServo.write(90 + servoAdjust[1]); //left
-  rightPlatformServo.write(90 + servoAdjust[2]); //right
-  yawPlatformServo.write(90 + servoAdjust[3]); 
-  //leftEarYawServo.write(90 + servoAdjust[4]); 
-  //leftEarPitchServo.write(90 + servoAdjust[5]); 
-  //rightEarYawServo.write(90 + servoAdjust[6]); 
-  //rightEarPitchServo.write(90 + servoAdjust[7]); 
   
-  //delay(1000);
 
-  prevAngles[0] = prevAngles[1] = prevAngles[2] = prevAngles[3] = prevAngles[4] = prevAngles[5] = prevAngles[6] = prevAngles[7] = 90;
+  //0-Left, 1-Right, 2-Yaw
+  servoAdjust[0] = -9; 
+  servoAdjust[1] = 7; 
+  servoAdjust[2] = -4; 
+
+
+  
+
+  leftPlatformServo.write(90 + servoAdjust[0]); //left
+  rightPlatformServo.write(90 + servoAdjust[1]); //right
+  yawPlatformServo.write(90 + servoAdjust[2]); 
+
+  
+
+  prevAngles[0] = prevAngles[1] = prevAngles[2] = 90;
   //0-front, 1-left, 2-right, 3-patform yaw, 4-left ear yaw, 5-left ear pitch, 6-right ear yaw, 7-right ear pitch
   
-  prevPlatformPos[0] = prevPlatformPos[1] = prevPlatformPos[2] = prevPlatformPos[3] = 0;
+  prevPlatformPos[0] = prevPlatformPos[1] = prevPlatformPos[2] = 0;
   
   //delay(1000);
 }
 
-void runHead(double z, double roll, double pitch, double yaw, int LEY, int LEP, int REY, int REP, double iters){
+void runHead(double roll, double pitch, double yaw, double iters){
   double ratio;
-  double angleDiff[8];
-  double positions[8];
+  double angleDiff[3];
+  double positions[3];
   double unitCubicValue;
-  positions[0] = z;
-  positions[1] = roll;
-  positions[2] = pitch;
-  positions[3] = yaw;
-  positions[4] = LEY;
-  positions[5] = LEP;
-  positions[6] = REY;
-  positions[7] = REP;
+
+  positions[0] = roll;
+  positions[1] = pitch;
+  positions[2] = yaw;
+
   
   unitCubicCreate(iters);
 
-  for(int i = 0; i <= 3; i++){
+  for(int i = 0; i <= 2; i++){
     angleDiff[i] = positions[i] - prevPlatformPos[i];
   }
   
-  for(int i = 4; i <= 7; i++){
+  /*for(int i = 4; i <= 7; i++){
     angleDiff[i] = positions[i] - prevAngles[i];
-  }
+  }*/
 
   if(abs(yaw - currentYaw) > 0){ //enter into yaw based control
     
@@ -96,22 +90,24 @@ void runHead(double z, double roll, double pitch, double yaw, int LEY, int LEP, 
         positions[i] = angleDiff[i] * unitCubicValue + prevPlatformPos[i];
       }
       
-      currentYaw = unitCubicValue * angleDiff[3] + prevPlatformPos[3];
+      /*currentYaw = unitCubicValue * angleDiff[3] + prevPlatformPos[3];
       
       for(int i = 4; i <= 7; i++){ //positions of ear servos
         positions[i] = angleDiff[i] * unitCubicValue + prevAngles[i];
-      }
+      }*/
       
-      angleCalculate(angles, positions[0], positions[1], positions[2], currentYaw); //z, roll, pitch, yaw
+      angleCalculate(angles, positions[0], positions[1], currentYaw); //roll, pitch, yaw
 
-      frontPlatformServo.write(angles[0] + servoAdjust[0]); 
-      leftPlatformServo.write(angles[1] + servoAdjust[1]); 
-      rightPlatformServo.write(angles[2] + servoAdjust[2]); 
+      //frontPlatformServo.write(angles[0] + servoAdjust[0]); 
+      
+      leftPlatformServo.write(angles[0] + servoAdjust[1]); 
+      rightPlatformServo.write(angles[1] + servoAdjust[2]); 
       yawPlatformServo.write(currentYaw + 90 + servoAdjust[3]); 
-      leftEarYawServo.write(positions[4] + servoAdjust[4]); 
-      leftEarPitchServo.write(positions[5] + servoAdjust[5]); 
-      rightEarYawServo.write(positions[6] + servoAdjust[6]); 
-      rightEarPitchServo.write(positions[7] + servoAdjust[7]);
+      
+      //leftEarYawServo.write(positions[4] + servoAdjust[4]); 
+      //leftEarPitchServo.write(positions[5] + servoAdjust[5]); 
+      //rightEarYawServo.write(positions[6] + servoAdjust[6]); 
+      //rightEarPitchServo.write(positions[7] + servoAdjust[7]);
 //      delay(servoDelay); 
     }
 
@@ -119,14 +115,14 @@ void runHead(double z, double roll, double pitch, double yaw, int LEY, int LEP, 
       prevAngles[i] = angles[i];
     }
     
-    for(int i = 3; i <= 7; i++){ //when done, make previous angles the end position of the motion
+    /*for(int i = 3; i <= 7; i++){ //when done, make previous angles the end position of the motion
       prevAngles[i] = positions[i];
-    }
+    }*/
   }
   
   else{ //enter into no yaw basted control
 
-  angleCalculate(angles, positions[0], positions[1], positions[2], positions[3]); //z, roll, pitch, yaw
+  angleCalculate(angles, positions[0], positions[1], positions[2]); //z, roll, pitch, yaw
   
     for(int i = 1; i <= iters; i++){
       ratio = (double)i / iters;
@@ -136,30 +132,33 @@ void runHead(double z, double roll, double pitch, double yaw, int LEY, int LEP, 
       for(int i = 0; i <= 2; i++){ //positions of platform servos
         positions[i] = angles[i] * unitCubicValue + prevAngles[i] * (1 - unitCubicValue);
       }
-      for(int i = 4; i <= 7; i++){ //positions of ear and yaw servos
-        positions[i] = angleDiff[i] * unitCubicValue + prevAngles[i];
-      }
 
-      frontPlatformServo.write(positions[0] + servoAdjust[0]); 
-      leftPlatformServo.write(positions[1] + servoAdjust[1]); 
-      rightPlatformServo.write(positions[2] + servoAdjust[2]); 
-      //yawPlatformServo.write(positions[3] + servoAdjust[3]); 
-      leftEarYawServo.write(positions[4] + servoAdjust[4]); 
-      leftEarPitchServo.write(positions[5] + servoAdjust[5]); 
-      rightEarYawServo.write(positions[6] + servoAdjust[6]); 
-      rightEarPitchServo.write(positions[7] + servoAdjust[7]);
+      /*for(int i = 4; i <= 7; i++){ //positions of ear and yaw servos
+        positions[i] = angleDiff[i] * unitCubicValue + prevAngles[i];
+      }*/
+
+      //frontPlatformServo.write(positions[0] + servoAdjust[0]); 
+      
+      leftPlatformServo.write(positions[0] + servoAdjust[0]); 
+      rightPlatformServo.write(positions[1] + servoAdjust[1]); 
+      yawPlatformServo.write(positions[2] + servoAdjust[2]); 
+      
+      //leftEarYawServo.write(positions[4] + servoAdjust[4]); 
+      //leftEarPitchServo.write(positions[5] + servoAdjust[5]); 
+      //rightEarYawServo.write(positions[6] + servoAdjust[6]); 
+      //rightEarPitchServo.write(positions[7] + servoAdjust[7]);
 //      delay(servoDelay); 
     }
 
-    for(int i = 0; i <= 7; i++){ //when done, make previous angles the end position of the motion
+    for(int i = 0; i <= 2; i++){ //when done, make previous angles the end position of the motion
       prevAngles[i] = positions[i];
     }
   }
 
-  prevPlatformPos[0] = z;
-  prevPlatformPos[1] = roll;
-  prevPlatformPos[2] = pitch;
-  prevPlatformPos[3] = yaw;
+  prevPlatformPos[0] = roll;
+  prevPlatformPos[1] = pitch;
+  prevPlatformPos[2] = yaw;
+
 }
 
 void unitCubicCreate(double tf){
@@ -173,7 +172,7 @@ void unitCubicCreate(double tf){
   
 }
 
-void angleCalculate(int arr[3], double z, double roll, double pitch, double yaw){
+void angleCalculate(int arr[3], double roll, double pitch, double yaw){
 // These define the joint and servo angles for the right side
   double jointAngle1,servoAngle1;
   // These define the joint and servo angles for the left side
@@ -192,7 +191,7 @@ void angleCalculate(int arr[3], double z, double roll, double pitch, double yaw)
   // This calculates the joint and servo angle for the right side
   jointAngle1 = acos((pow(x,2) + pow(y,2) - pow(17,2) - pow(104,2))/(2 * 17 * 104));
   servoAngle1 = atan(y/x) - atan((104*sin(jointAngle1))/(17+104*cos(jointAngle1)));
-  // This sets the servo angle to the outgoing array.
+  // This sets the R_HEAD servo angle to the outgoing array.
   arr[0] = servoAngle1 * radToDeg;
 
   // This takes in the x and y positions for the left side
@@ -201,7 +200,7 @@ void angleCalculate(int arr[3], double z, double roll, double pitch, double yaw)
   // This calculates the joint and servo angles for the left side.
   jointAngle2 = acos((pow(x,2) + pow(y,2) - pow(17,2) - pow(104,2))/(2 * 17 * 104));
   servoAngle2 = atan(y/x) - atan((104*sin(jointAngle2))/(17+104*cos(jointAngle2)));
-  // This defines the servo angle in the outgoing array.
+  // This defines the L_HEAD servo angle in the outgoing array.
   arr[1] = servoAngle2 * radToDeg;
   // The yaw is then inserted into the third position of the outgoing array
   arr[2] = yaw;
@@ -210,75 +209,11 @@ void angleCalculate(int arr[3], double z, double roll, double pitch, double yaw)
 void testHeadLoop(){
   iterations = 100;
   servoDelay = 2;
-  //runPlatform(0, 0, 0, 0, 0); //z, roll, pitch, yaw, no yaw iterations
   
-  /*runHead(0, 0, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 30, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 30, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 0, 60, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 0, 0, 90-60, 90+60, 90+60, 90-60, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations*/
+  runHead(0, 30, 0, iterations); //roll, pitch, yaw, iterations
+  runHead(0, 30, 90, iterations); //roll, pitch, yaw, iterations
+  runHead(0, 30, 0, iterations); //roll, pitch, yaw, iterations
+  runHead(0, 0, 0, iterations); //roll, pitch, yaw, iterations
 
-  runHead(0, 0, 30, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 30, 90, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 30, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-
-  /*runHead(0, 0, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 35, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, -35, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, -35, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 35, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, -25, -25, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 0, 0, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations
-  runHead(0, 25, 25, 0, 90, 90, 90, 90, iterations); //z, roll, pitch, yaw, LEY, LEP, REY, REP, iterations*/
   
-  /*leftEarYawServo.write(180); 
-  leftEarPitchServo.write(180); 
-  rightEarYawServo.write(180); 
-  rightEarPitchServo.write(180); 
-  delay(500);
-  yawPlatformServo.write(90);
-  leftEarYawServo.write(90); 
-  leftEarPitchServo.write(90); 
-  rightEarYawServo.write(90); 
-  rightEarPitchServo.write(90); 
-  delay(500);
-  yawPlatformServo.write(0);
-  leftEarYawServo.write(0); 
-  leftEarPitchServo.write(0); 
-  rightEarYawServo.write(0); 
-  rightEarPitchServo.write(0); 
-  delay(500);
-  yawPlatformServo.write(90);
-  leftEarYawServo.write(90); 
-  leftEarPitchServo.write(90); 
-  rightEarYawServo.write(90); 
-  rightEarPitchServo.write(90); 
-  delay(500);*/
-
-  /*frontPlatformServo.write(90 + servoAdjust[0]); 
-  leftPlatformServo.write(90 + servoAdjust[1]); 
-  rightPlatformServo.write(90 + servoAdjust[2]); 
-  yawPlatformServo.write(90 + servoAdjust[3]); 
-  leftEarYawServo.write(90 + servoAdjust[4]); 
-  leftEarPitchServo.write(90 + servoAdjust[5]); 
-  rightEarYawServo.write(90 + servoAdjust[6]); 
-  rightEarPitchServo.write(90 + servoAdjust[7]);
-  delay(500);
-  frontPlatformServo.write(110 + servoAdjust[0]); 
-  leftPlatformServo.write(110 + servoAdjust[1]); 
-  rightPlatformServo.write(110 + servoAdjust[2]); 
-  yawPlatformServo.write(110 + servoAdjust[3]); 
-  leftEarYawServo.write(110 + servoAdjust[4]); 
-  leftEarPitchServo.write(110 + servoAdjust[5]); 
-  rightEarYawServo.write(110 + servoAdjust[6]); 
-  rightEarPitchServo.write(110 + servoAdjust[7]);
-  delay(500);*/
 }
