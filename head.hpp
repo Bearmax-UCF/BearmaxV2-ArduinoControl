@@ -22,7 +22,7 @@ void setupHead();
  * @param REP The right ear pitch (0 - 180 deg)
  * @param iters The number of iterations it should take to reach target positions.
  */
-void runHead(double z, double roll, double pitch, double yaw, int LEY, int LEP, int REY, int REP, double iters);
+void runHead(double roll, double pitch, double yaw, double iters);
 
 /**
  * Not used outside of head file
@@ -32,7 +32,7 @@ void unitCubicCreate(double tf);
 /**
  * Not used outside of head file
  */
-void angleCalculate(int arr[3], double z, double roll, double pitch, double yaw);
+void angleCalculate(int arr[3], double roll, double pitch, double yaw);
 
 /**
  * loop() implementation for testing Head servos
