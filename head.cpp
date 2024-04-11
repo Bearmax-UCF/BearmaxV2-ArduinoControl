@@ -36,16 +36,16 @@ void setupHead(){
 
   
 
-  //0-Left, 1-Right, 2-Yaw
+  //0-Right, 1-Left, 2-Yaw
   servoAdjust[0] = -9; 
   servoAdjust[1] = 7; 
   servoAdjust[2] = -4; 
 
 
-  
-
   leftPlatformServo.write(90 + servoAdjust[0]); //left
   rightPlatformServo.write(90 + servoAdjust[1]); //right
+  
+  
   yawPlatformServo.write(90 + servoAdjust[2]); 
 
   
@@ -99,10 +99,14 @@ void runHead(double roll, double pitch, double yaw, double iters){
       angleCalculate(angles, positions[0], positions[1], currentYaw); //roll, pitch, yaw
 
       //frontPlatformServo.write(angles[0] + servoAdjust[0]); 
+
+
+      leftPlatformServo.write(angles[0] + servoAdjust[0]); 
+      rightPlatformServo.write(angles[1] + servoAdjust[1]);
       
-      leftPlatformServo.write(angles[0] + servoAdjust[1]); 
-      rightPlatformServo.write(angles[1] + servoAdjust[2]); 
-      yawPlatformServo.write(currentYaw + 90 + servoAdjust[3]); 
+      
+       
+      yawPlatformServo.write(currentYaw + servoAdjust[2]); 
       
       //leftEarYawServo.write(positions[4] + servoAdjust[4]); 
       //leftEarPitchServo.write(positions[5] + servoAdjust[5]); 
@@ -138,9 +142,10 @@ void runHead(double roll, double pitch, double yaw, double iters){
       }*/
 
       //frontPlatformServo.write(positions[0] + servoAdjust[0]); 
-      
       leftPlatformServo.write(positions[0] + servoAdjust[0]); 
       rightPlatformServo.write(positions[1] + servoAdjust[1]); 
+      
+      
       yawPlatformServo.write(positions[2] + servoAdjust[2]); 
       
       //leftEarYawServo.write(positions[4] + servoAdjust[4]); 

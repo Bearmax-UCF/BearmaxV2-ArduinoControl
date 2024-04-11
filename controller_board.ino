@@ -62,14 +62,14 @@ void setup() {
   
   // Send ready packet to master
   SerialConn.println("ready");
-  
+   
   // 0-Chassis, 1-L_Shoulder, 2-L_Rotator, 3-L_Elbow, 4-L_Grip, 5-L_Thumb, 6-L_Paw, 7-R_Shoulder, 8-R_Rotator, 9-R_Elbow, 10-R_Grip, 11-R_Thumb, 12-R_Paw
-  // Netural Pos Below
+  // Delays Below
   //      0-0,  1-180,  2-90, 3-0,  4-90, 5-0,  6-90, 7-0,  8-90, 9-180,  10-0, 11-90, 12-0
-  runBody(  0,    180,    90,   0,    90,   0,    90,   0,    90,   180,     0,    90,    0);
+  runBody(  0,      0,     0,   0,     0,   0,     0,   0,     0,     0,     0,     0,    0);
 
   // Which way each joint moves:
-  /**
+  /** s 0:180:90:0:90:0:90:0:90:180:0:90:0:0:0:0
    * 0- 0-180, Increase
    * LEFT ARM BELOW
    * 1- 0-180, Increase angle = lower position,       180 neutral pos

@@ -55,25 +55,49 @@ void runBody(int chassis, int las, int lar, int lae, int lag, int lat, int lap, 
     //chassisServo.write(chassis + 90);
     
     // Left Arm
-    lasServo.write(las);
-    larServo.write(lar);
+    lasServo.write(180 - las);
+
+    if(lar > 90){
+      lar = lar * -1;
+    }
+    larServo.write(lar + 90);
+    
     laeServo.write(lae);
     // Left Hand
     
-    lagServo.write(lag);
+    if(lag > 90) {
+      lag = lag * -1;
+    }
+    lagServo.write(lag + 90);
+    
     latServo.write(lat);
-    lapServo.write(lap);
+
+    if(lap > 90) {
+      lap = lap * -1;
+    }
+    lapServo.write(lap + 90);
     
 
     // Right Arm
     rasServo.write(ras);
-    rarServo.write(rar);
-    raeServo.write(rae);
+
+    if(rar > 90) {
+      rar = rar * -1;
+    }
+    rarServo.write(rar + 90);
+
+    
+    raeServo.write(180 - rae);
 
     // Right Hand
     
     ragServo.write(rag);
-    ratServo.write(rat);
+
+    if(rat > 90) {
+      rat = rat * -1;
+    }
+    ratServo.write(rat + 90);
+    
     rapServo.write(rap);
     
 }
