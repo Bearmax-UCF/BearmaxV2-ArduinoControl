@@ -88,6 +88,9 @@ void setup() {
    * 
    */
   
+
+
+  
 }
 
 /**
@@ -241,3 +244,152 @@ bool body_has_update() {
 void loop() {
   cmd_handler();   
 }
+
+  // Pose angle guide for All poses (Simple versions):
+  // These angles are what ROS2 sends over converted to degrees, subject to change
+  /**
+   * HAPPY
+   * Chassis:       0
+   * L_Shoulder:    140
+   * L_Rotator:     0
+   * L_Elbow:       70
+   * L_Grip:        86
+   * L_Thumb:       0
+   * L_Paw:         0
+   * R_Shoulder:    120
+   * R_Rotator:     0
+   * R_Elbow:       82
+   * R_Grip:        0
+   * R_Thumb:       0
+   * R_Paw:         0
+   * L_Neck:        0
+   * R_Neck:        0
+   * Head_Yaw:      0
+   * 
+   * SAD                s 0:105:30:70:90:0:0:120:60:50:90:0:0:0:10:0
+   * Chassis:       0
+   * L_Shoulder:    105
+   * L_Rotator:     30
+   * L_Elbow:       70
+   * L_Grip:        90
+   * L_Thumb:       0
+   * L_Paw:         0
+   * R_Shoulder:    120
+   * R_Rotator:     60
+   * R_Elbow:       50
+   * R_Grip:        90
+   * R_Thumb:       0
+   * R_Paw:         0
+   * L_Neck:        0
+   * R_Neck:        10
+   * Head_Yaw:      0
+   * 
+   * ANGRY            s 22:90:45:64:90:0:80:90:45:64:90:0:90:0:0:0
+   * Chassis:       22
+   * L_Shoulder:    90
+   * L_Rotator:     45
+   * L_Elbow:       64
+   * L_Grip:        90
+   * L_Thumb:       0
+   * L_Paw:         80
+   * R_Shoulder:    90
+   * R_Rotator:     45
+   * R_Elbow:       64
+   * R_Grip:        90
+   * R_Thumb:       0
+   * R_Paw:         90
+   * L_Neck:        0
+   * R_Neck:        0
+   * Head_Yaw:      0
+   * 
+   * CONFUSED            s 0:120:0:50:44:0:28:0:0:0:0:0:0:10:0:0
+   * Chassis:       0
+   * L_Shoulder:    155
+   * L_Rotator:     0
+   * L_Elbow:       0
+   * L_Grip:        44
+   * L_Thumb:       0
+   * L_Paw:         28
+   * R_Shoulder:    0
+   * R_Rotator:     0
+   * R_Elbow:       0
+   * R_Grip:        0
+   * R_Thumb:       0
+   * R_Paw:         0
+   * L_Neck:        10
+   * R_Neck:        0
+   * Head_Yaw:      0
+   * 
+   * SHOCKED            s 0:150:0:20:0:0:0:150:0:20:0:0:0:0:0:0
+   * Chassis:       0
+   * L_Shoulder:    150
+   * L_Rotator:     0
+   * L_Elbow:       20
+   * L_Grip:        0
+   * L_Thumb:       0
+   * L_Paw:         0
+   * R_Shoulder:    150
+   * R_Rotator:     0
+   * R_Elbow:       20
+   * R_Grip:        0
+   * R_Thumb:       0
+   * R_Paw:         0
+   * L_Neck:        0
+   * R_Neck:        0
+   * Head_Yaw:      0
+   * 
+   * //MOVE NECK AS WELL FOR THIS
+   * WORRIED            s 0:95:40:50:0:0:0:95:50:53:0:0:0:5:0:0
+   * Chassis:       0
+   * L_Shoulder:    65
+   * L_Rotator:     32
+   * L_Elbow:       66
+   * L_Grip:        0
+   * L_Thumb:       0
+   * L_Paw:         0
+   * R_Shoulder:    95
+   * R_Rotator:     0
+   * R_Elbow:       53
+   * R_Grip:        0
+   * R_Thumb:       0
+   * R_Paw:         66
+   * L_Neck:        10
+   * R_Neck:        0
+   * Head_Yaw:      0
+   * 
+   * SCARED            s 55:85:53:74:90:0:0:85:50:80:0:0:0:0:15:30
+   * Chassis:       55
+   * L_Shoulder:    85
+   * L_Rotator:     53
+   * L_Elbow:       74
+   * L_Grip:        90
+   * L_Thumb:       0
+   * L_Paw:         0
+   * R_Shoulder:    85
+   * R_Rotator:     50
+   * R_Elbow:       80
+   * R_Grip:        0
+   * R_Thumb:       0
+   * R_Paw:         0
+   * L_Neck:        0
+   * R_Neck:        15
+   * Head_Yaw:      30
+   * 
+   * ANNOYED            s 22:60:60:88:0:0:0:36:60:80:0:0:0:0:0:32
+   * Chassis:       22
+   * L_Shoulder:    66
+   * L_Rotator:     60
+   * L_Elbow:       88
+   * L_Grip:        0
+   * L_Thumb:       0
+   * L_Paw:         0
+   * R_Shoulder:    36
+   * R_Rotator:     60
+   * R_Elbow:       88
+   * R_Grip:        0
+   * R_Thumb:       0
+   * R_Paw:         0
+   * L_Neck:        0
+   * R_Neck:        0
+   * Head_Yaw:      32
+  */

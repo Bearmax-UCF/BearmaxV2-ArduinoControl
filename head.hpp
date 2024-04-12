@@ -4,7 +4,12 @@
  */
 #include <Arduino.h>
 #include <Servo.h> // servo library
+#include <math.h>
 
+
+#define LEFT_POS_DEFAULT 100
+#define RIGHT_POS_DEFAULT 120
+#define YAW_POS_DEFAULT 96
 /**
  * Runs head-specific setup code.
  */
@@ -24,10 +29,7 @@ void setupHead();
  */
 void runHead(double roll, double pitch, double yaw, double iters);
 
-/**
- * Not used outside of head file
- */
-void unitCubicCreate(double tf);
+
 
 /**
  * Not used outside of head file
